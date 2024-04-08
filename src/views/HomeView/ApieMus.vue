@@ -6,7 +6,10 @@
                 <div>Video</div>
             </div>
             <div class="right">
-                <h1>APIE MUS</h1>
+                <Transition name="h1">
+                    <h1>APIE MUS</h1>
+                </Transition>
+                
                 <p><pre>
 Gyvename IT sektoriaus ritmu ir padedame studentams tech sektoriaus kelionėje. Siekiame, kad kiekvienas studentas augtų ir tobulintų minkštuosius ir techninius įgūdžius, nes būtent tai užtikrina ilgalaikį ir tvarų tobulėjimą.
 
@@ -45,13 +48,50 @@ Siekiame, kad kiekvienas FastTrack studentas po kursų turėtų ne tik stiprų t
 <script>
 import img3 from "@/assets/homepage/img3.png"
 import img4 from "@/assets/homepage/img4.png"
-
+import { ref, onMounted } from 'vue'
+import gsap from "gsap/gsap-core"
 export default {
 setup() {
+    const showH1 = ref(false)
+    onMounted(() => {
+        const beforeEnterH1 = (el) => {
+            el.style.opacity = 0
+            el.style.transform = 'translateY(-100px)'
+        }
+
+        const enterH1 = (el) => {
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'bounce'
+            })
+        }
+
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 1
+        }
+  
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                let target = entry.target
+              enterH1(target)
+            }
+          })
+        }, options)
+  
+        let element = document.querySelector('.apie-mus h1')
+        beforeEnterH1(element)
+        observer.observe(element)
+      })
 
     return {
         img3: img3,
         img4: img4,
+        showH1,
     }
 }
 
@@ -120,5 +160,13 @@ img {
     height: 100px;
 }
 
+
+.h1-enter-from {
+    opacity: 0;
+    transform: translateY(-100px);
+}
+.h1-enter-active {
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+}
 </style>
   
